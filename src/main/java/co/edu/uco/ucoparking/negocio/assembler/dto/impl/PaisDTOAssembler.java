@@ -41,13 +41,4 @@ public final class PaisDTOAssembler implements DTOAssembler<PaisDominio, PaisDTO
 				.nombre(paisAEnsamblar.getNombre())
 				.build();
 	}
-	
-	public static void main(String[] args) {
-		var miPaisDTO = new PaisDTO.Builder()
-				.id(null)
-				.build();
-		
-		var miPaisDominio = PaisDTOAssembler.getInstance().ensamblarDominio(miPaisDTO);
-	}
-	
 }
