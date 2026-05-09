@@ -3,7 +3,7 @@ package co.edu.uco.ucoparking.negocio.assembler.dto.impl;
 import co.edu.uco.ucoparking.dto.MunicipioDTO;
 import co.edu.uco.ucoparking.negocio.assembler.dto.DTOAssembler;
 import co.edu.uco.ucoparking.negocio.dominio.MunicipioDominio;
-import co.edu.uco.ucoparking.transversal.UtilObjeto;
+import co.edu.uco.ucoparking.transversal.utilitario.UtilObjeto;
 
 public final class MunicipioDTOAssembler implements DTOAssembler<MunicipioDominio, MunicipioDTO> {
 

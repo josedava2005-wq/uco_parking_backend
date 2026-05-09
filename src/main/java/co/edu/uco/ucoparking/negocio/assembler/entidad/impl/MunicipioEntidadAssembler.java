@@ -3,7 +3,7 @@ package co.edu.uco.ucoparking.negocio.assembler.entidad.impl;
 import co.edu.uco.ucoparking.entidad.MunicipioEntidad;
 import co.edu.uco.ucoparking.negocio.assembler.entidad.EntidadAssembler;
 import co.edu.uco.ucoparking.negocio.dominio.MunicipioDominio;
-import co.edu.uco.ucoparking.transversal.UtilObjeto;
+import co.edu.uco.ucoparking.transversal.utilitario.UtilObjeto;
 
 public final class MunicipioEntidadAssembler implements EntidadAssembler<MunicipioEntidad, MunicipioDominio> {
 
