@@ -7,6 +7,7 @@ import co.edu.uco.ucoparking.entidad.PaisEntidad;
 import co.edu.uco.ucoparking.negocio.casouso.pais.RegistrarNuevoPaisCasoUso;
 import co.edu.uco.ucoparking.negocio.dominio.PaisDominio;
 import co.edu.uco.ucoparking.transversal.utilitario.UtilObjeto;
+import co.edu.uco.ucoparking.transversal.utilitario.UtilTexto;
 
 public class RegistrarNuevoPaisCasoUsoImpl implements RegistrarNuevoPaisCasoUso {
 
@@ -29,37 +30,46 @@ public class RegistrarNuevoPaisCasoUsoImpl implements RegistrarNuevoPaisCasoUso 
 	}
 
 	private void validarNoExistaOtroPaisConMismoNombre(String nombre) {
-		
 		var paisEntidadFiltro = new PaisEntidad.Builder().nombre(nombre).build();
 		var resultados = daoFactory.getPaisDAO().consultarPorFiltro(paisEntidadFiltro);
-		
-		
-		if(UtilObjeto.esNulo(resultados) || !resultados.isEmpty()) {
-			// Si no se cumple, lanzar una excepción customizada
-			// Ejemplo: ExistePaisConMismoNombreException
-		}
 
+		if (!resultados.isEmpty()) {
+			throw new RuntimeException("Ya existe un pais con el nombre: " + nombre);
+		}
 	}
 
 	private UUID generarIdUnicoNuevoPais() {
+		
+		UUID uuidGenerado;
+		PaisEntidad paisConsultado;
+		
+		do {
+			uuidGenerado = UUID.randomUUID();
+			paisConsultado = daoFactory
+					.getPaisDAO()
+					.consultarPorId(uuidGenerado);
+		} while (paisConsultado != null);
 
-		// Logica para generar un id que no existe
-
-		return UUID.randomUUID();
+		return uuidGenerado;
 	}
 
 	private void validarIntegridadDatosPais(PaisDominio datos) {
-		// Validación de datos consistentes: tipos de dato, longitud, obligatoriedad,
-		// formato y rango.
-
+		if (UtilObjeto.esNulo(datos)) {
+			throw new RuntimeException("Los datos del pais no pueden ser nulos");
+		}
+		if (UtilTexto.esNula(datos.getNombre())) {
+			throw new RuntimeException("El nombre del pais es obligatorio");
+		}
+		String nombre = datos.getNombre();
+		if (nombre.length() < 1 || nombre.length() > 100) {
+			throw new RuntimeException("El nombre debe tener entre 1 y 100 caracteres");
+		}
 	}
 
 	private void guardarNuevoPais(PaisDominio pais) {
-		// logica para guardar el nuevo pais
-
 		var idNuevoPais = generarIdUnicoNuevoPais();
 
-		PaisEntidad paisEntidad = null;
+		PaisEntidad paisEntidad = new PaisEntidad.Builder().id(idNuevoPais).nombre(pais.getNombre()).build();
 		daoFactory.getPaisDAO().crear(paisEntidad);
 
 	}

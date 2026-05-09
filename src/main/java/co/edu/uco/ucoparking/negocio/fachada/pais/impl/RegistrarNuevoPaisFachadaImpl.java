@@ -24,7 +24,7 @@ public class RegistrarNuevoPaisFachadaImpl implements RegistrarNuevoPaisFachada 
 
 			daoFactory.iniciarTransaccion();
 
-			PaisDominio dominio = null; // Mapper
+			PaisDominio dominio = new PaisDominio.Builder().id(datos.getId()).nombre(datos.getNombre()).build();
 			casoUso.ejecutar(dominio);
 
 			daoFactory.confirmarTransaccion();
@@ -34,11 +34,11 @@ public class RegistrarNuevoPaisFachadaImpl implements RegistrarNuevoPaisFachada 
 			daoFactory.cancelarTransaccion();
 			throw exception;
 
-		} catch (Exception exception) {
+		} catch (Exception e) {
 
 			daoFactory.cancelarTransaccion();
 			// Cuidado: No se puede botar la excepcion raiz ( root exception )
-			throw new UcoParkingExcepcion();
+			throw new RuntimeException("La transaccion fue cancelada.", e);
 
 		} finally {
 
@@ -55,7 +55,7 @@ public class RegistrarNuevoPaisFachadaImpl implements RegistrarNuevoPaisFachada 
 			RegistrarNuevoPaisFachada fachada = new RegistrarNuevoPaisFachadaImpl();
 
 			fachada.ejecutar(pais);
-			
+
 			System.out.println("Soy un mago. Todo funcionó.");
 		} catch (Exception e) {
 			System.err.println("No funcionó. A revisar!!!!!");
