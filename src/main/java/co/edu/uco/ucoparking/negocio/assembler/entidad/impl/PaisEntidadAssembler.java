@@ -13,7 +13,7 @@ public final class PaisEntidadAssembler implements EntidadAssembler<PaisEntidad,
 		super();
 	}
 	
-	public synchronized static final EntidadAssembler<PaisEntidad, PaisDominio> getInstance() {
+	public static final synchronized EntidadAssembler<PaisEntidad, PaisDominio> getInstance() {
 		if (UtilObjeto.esNulo(INSTANCE)) {
 			INSTANCE = new PaisEntidadAssembler();
 		}

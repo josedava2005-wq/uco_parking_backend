@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import co.edu.uco.ucoparking.datos.dao.PaisDAO;
 import co.edu.uco.ucoparking.datos.dao.sql.factoria.sqlserver.SQLServerDAOFactory;
+import co.edu.uco.ucoparking.transversal.utilitario.excepcion.UcoParkingExcepcion;
 
 public abstract class DAOFactory {
 
@@ -15,8 +16,7 @@ public abstract class DAOFactory {
 		case SQLSERVER:
 			return new SQLServerDAOFactory();
 		default:
-			// No dejar esta. Deberia ser una excepción personalizada
-			throw new IllegalArgumentException("Tipo de factoría no soportada: " + FACTORIA_ACTUAL);
+			throw new UcoParkingExcepcion("Tipo de factoría no soportada: " + FACTORIA_ACTUAL);
 
 		}
 

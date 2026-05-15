@@ -6,6 +6,7 @@ import co.edu.uco.ucoparking.negocio.casouso.pais.RegistrarNuevoPaisCasoUso;
 import co.edu.uco.ucoparking.negocio.casouso.pais.impl.RegistrarNuevoPaisCasoUsoImpl;
 import co.edu.uco.ucoparking.negocio.dominio.PaisDominio;
 import co.edu.uco.ucoparking.negocio.fachada.pais.RegistrarNuevoPaisFachada;
+import co.edu.uco.ucoparking.transversal.utilitario.excepcion.TransaccionExcepcion;
 import co.edu.uco.ucoparking.transversal.utilitario.excepcion.UcoParkingExcepcion;
 
 public class RegistrarNuevoPaisFachadaImpl implements RegistrarNuevoPaisFachada {
@@ -37,31 +38,13 @@ public class RegistrarNuevoPaisFachadaImpl implements RegistrarNuevoPaisFachada 
 		} catch (Exception e) {
 
 			daoFactory.cancelarTransaccion();
-			// Cuidado: No se puede botar la excepcion raiz ( root exception )
-			throw new RuntimeException("La transaccion fue cancelada.", e);
+			throw new TransaccionExcepcion("La transaccion fue cancelada.", e);
 
 		} finally {
 
 			daoFactory.cerrarConexion();
 
 		}
-	}
-
-	public static void main(String[] args) {
-
-		try {
-			var pais = new PaisDTO.Builder().nombre("Colombia").build();
-
-			RegistrarNuevoPaisFachada fachada = new RegistrarNuevoPaisFachadaImpl();
-
-			fachada.ejecutar(pais);
-
-			System.out.println("Soy un mago. Todo funcionó.");
-		} catch (Exception e) {
-			System.err.println("No funcionó. A revisar!!!!!");
-			e.printStackTrace();
-		}
-
 	}
 
 }

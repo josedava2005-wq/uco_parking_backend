@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import co.edu.uco.ucoparking.datos.dao.PaisDAO;
 import co.edu.uco.ucoparking.datos.dao.sql.sqlserver.PaisSQLServerDAO;
+import co.edu.uco.ucoparking.transversal.utilitario.excepcion.TransaccionExcepcion;
 import io.github.cdimascio.dotenv.Dotenv;
 import co.edu.uco.ucoparking.datos.dao.sql.factoria.DAOFactory;
 
@@ -31,12 +32,11 @@ public class SQLServerDAOFactory extends DAOFactory {
 					+ "encrypt=false;" + "trustServerCertificate=false;" + "loginTimeout=30;";
 
 			conexion = DriverManager.getConnection(urlConexion);
-			System.out.println("Conexión a SQL Server establecida exitosamente.");
-		} catch (Exception e) {
+		} catch (SQLException e) {
 
 			conexion = null;
 
-			throw new RuntimeException("Error al abrir la conexión a la base de datos SQLServer", e);
+			throw new TransaccionExcepcion("Error al abrir la conexión a la base de datos SQLServer", e);
 		}
 
 	}
@@ -46,11 +46,10 @@ public class SQLServerDAOFactory extends DAOFactory {
 		try {
 			if (conexion != null && !conexion.isClosed()) {
 				conexion.close();
-				System.out.println("La conexion fue cerrada correctamente.");
 
 			}
 		} catch (SQLException e) {
-			throw new RuntimeException("Error al cerrar la conexión de la base de datos SQLServer", e);
+			throw new TransaccionExcepcion("Error al cerrar la conexión de la base de datos SQLServer", e);
 		} finally {
 			conexion = null;
 		}
@@ -62,10 +61,9 @@ public class SQLServerDAOFactory extends DAOFactory {
 		try {
 			if (esConexionValida()) {
 				conexion.setAutoCommit(false);
-				System.out.println("Transaccion Iniciada.");
 			}
 		} catch (SQLException e) {
-			throw new RuntimeException("Error al iniciar la transaccion de la base de datos SQLServer", e);
+			throw new TransaccionExcepcion("Error al iniciar la transaccion de la base de datos SQLServer", e);
 		}
 	}
 
@@ -75,10 +73,9 @@ public class SQLServerDAOFactory extends DAOFactory {
 			if (esConexionValida()) {
 				conexion.commit();
 				conexion.setAutoCommit(true);
-				System.out.println("Transaccion Confirmada.");
 			}
 		} catch (SQLException e) {
-			throw new RuntimeException("Error al confirmar la transaccion de la base de datos SQLServer", e);
+			throw new TransaccionExcepcion("Error al confirmar la transaccion de la base de datos SQLServer", e);
 		}
 	}
 
@@ -88,10 +85,9 @@ public class SQLServerDAOFactory extends DAOFactory {
 			if (esConexionValida()) {
 				conexion.rollback();
 				conexion.setAutoCommit(true);
-				System.out.println("Transaccion Cancelada.");
 			}
 		} catch (SQLException e) {
-			throw new RuntimeException("Error al cancelar la transaccion de la base de datos SQLServer", e);
+			throw new TransaccionExcepcion("Error al cancelar la transaccion de la base de datos SQLServer", e);
 		}
 	}
 
@@ -99,11 +95,11 @@ public class SQLServerDAOFactory extends DAOFactory {
 	public PaisDAO getPaisDAO() {
 		return new PaisSQLServerDAO(conexion);
 	}
-	
+
 	private boolean esConexionValida() {
 		try {
 			return conexion != null && !conexion.isClosed();
-		} catch (SQLException e) {
+		} catch (SQLException _) {
 			return false;
 		}
 	}

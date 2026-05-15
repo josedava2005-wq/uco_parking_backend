@@ -14,7 +14,7 @@ public final class PaisDTOAssembler implements DTOAssembler<PaisDominio, PaisDTO
 		super();
 	}
 	
-	public synchronized static final DTOAssembler<PaisDominio, PaisDTO> getInstance() {
+	public static final synchronized DTOAssembler<PaisDominio, PaisDTO> getInstance() {
 		if (UtilObjeto.esNulo(INSTANCE)) {
 			INSTANCE = new PaisDTOAssembler();
 		}

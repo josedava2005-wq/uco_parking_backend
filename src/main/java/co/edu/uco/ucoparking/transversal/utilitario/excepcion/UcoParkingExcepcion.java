@@ -4,5 +4,11 @@ public class UcoParkingExcepcion extends RuntimeException {
 
 	private static final long serialVersionUID = -127481128908084318L;
 	
+	public UcoParkingExcepcion(String mensaje) {
+		super(mensaje);
+	}
 	
+	public UcoParkingExcepcion(String mensaje, Throwable causa) {
+		super(mensaje, causa);
+	}
 }

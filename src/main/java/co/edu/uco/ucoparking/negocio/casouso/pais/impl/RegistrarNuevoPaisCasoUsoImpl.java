@@ -8,6 +8,7 @@ import co.edu.uco.ucoparking.negocio.casouso.pais.RegistrarNuevoPaisCasoUso;
 import co.edu.uco.ucoparking.negocio.dominio.PaisDominio;
 import co.edu.uco.ucoparking.transversal.utilitario.UtilObjeto;
 import co.edu.uco.ucoparking.transversal.utilitario.UtilTexto;
+import co.edu.uco.ucoparking.transversal.utilitario.excepcion.ValidacionExcepcion;
 
 public class RegistrarNuevoPaisCasoUsoImpl implements RegistrarNuevoPaisCasoUso {
 
@@ -34,7 +35,7 @@ public class RegistrarNuevoPaisCasoUsoImpl implements RegistrarNuevoPaisCasoUso 
 		var resultados = daoFactory.getPaisDAO().consultarPorFiltro(paisEntidadFiltro);
 
 		if (!resultados.isEmpty()) {
-			throw new RuntimeException("Ya existe un pais con el nombre: " + nombre);
+			throw new ValidacionExcepcion("Ya existe un pais con el nombre: " + nombre);
 		}
 	}
 
@@ -55,14 +56,14 @@ public class RegistrarNuevoPaisCasoUsoImpl implements RegistrarNuevoPaisCasoUso 
 
 	private void validarIntegridadDatosPais(PaisDominio datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new RuntimeException("Los datos del pais no pueden ser nulos");
+			throw new ValidacionExcepcion("Los datos del pais no pueden ser nulos");
 		}
 		if (UtilTexto.esNula(datos.getNombre())) {
-			throw new RuntimeException("El nombre del pais es obligatorio");
+			throw new ValidacionExcepcion("El nombre del pais es obligatorio");
 		}
 		String nombre = datos.getNombre();
-		if (nombre.length() < 1 || nombre.length() > 100) {
-			throw new RuntimeException("El nombre debe tener entre 1 y 100 caracteres");
+		if (nombre.isEmpty() || nombre.length() > 100) {
+			throw new ValidacionExcepcion("El nombre debe tener entre 1 y 100 caracteres");
 		}
 	}
 
