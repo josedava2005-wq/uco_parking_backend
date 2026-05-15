@@ -31,7 +31,7 @@ public class RegistrarNuevoPaisCasoUsoImpl implements RegistrarNuevoPaisCasoUso 
 	}
 
 	private void validarNoExistaOtroPaisConMismoNombre(String nombre) {
-		var paisEntidadFiltro = new PaisEntidad.Builder().nombre(nombre).build();
+		var paisEntidadFiltro = new PaisEntidad.Builder().nombre(nombre.trim()).build();
 		var resultados = daoFactory.getPaisDAO().consultarPorFiltro(paisEntidadFiltro);
 
 		if (!resultados.isEmpty()) {
@@ -61,16 +61,19 @@ public class RegistrarNuevoPaisCasoUsoImpl implements RegistrarNuevoPaisCasoUso 
 		if (UtilTexto.esNula(datos.getNombre())) {
 			throw new ValidacionExcepcion("El nombre del pais es obligatorio");
 		}
-		String nombre = datos.getNombre();
-		if (nombre.isEmpty() || nombre.length() > 100) {
-			throw new ValidacionExcepcion("El nombre debe tener entre 1 y 100 caracteres");
+		String nombre = datos.getNombre().trim();
+		if (nombre.isEmpty()) {
+			throw new ValidacionExcepcion("El nombre del pais no puede ser solo espacios");
+		}
+		if (nombre.length() > 100) {
+			throw new ValidacionExcepcion("El nombre debe tener maximo 100 caracteres");
 		}
 	}
 
 	private void guardarNuevoPais(PaisDominio pais) {
 		var idNuevoPais = generarIdUnicoNuevoPais();
 
-		PaisEntidad paisEntidad = new PaisEntidad.Builder().id(idNuevoPais).nombre(pais.getNombre()).build();
+		PaisEntidad paisEntidad = new PaisEntidad.Builder().id(idNuevoPais).nombre(pais.getNombre().trim()).build();
 		daoFactory.getPaisDAO().crear(paisEntidad);
 
 	}

@@ -2,23 +2,23 @@ package co.edu.uco.ucoparking.negocio.fachada.pais.impl;
 
 import co.edu.uco.ucoparking.datos.dao.sql.factoria.DAOFactory;
 import co.edu.uco.ucoparking.dto.PaisDTO;
-import co.edu.uco.ucoparking.negocio.casouso.pais.RegistrarNuevoPaisCasoUso;
-import co.edu.uco.ucoparking.negocio.casouso.pais.impl.RegistrarNuevoPaisCasoUsoImpl;
+import co.edu.uco.ucoparking.negocio.casouso.pais.EliminarPaisCasoUso;
+import co.edu.uco.ucoparking.negocio.casouso.pais.impl.EliminarPaisCasoUsoImpl;
 import co.edu.uco.ucoparking.negocio.dominio.PaisDominio;
-import co.edu.uco.ucoparking.negocio.fachada.pais.RegistrarNuevoPaisFachada;
+import co.edu.uco.ucoparking.negocio.fachada.pais.EliminarPaisFachada;
 import co.edu.uco.ucoparking.transversal.utilitario.UtilObjeto;
 import co.edu.uco.ucoparking.transversal.utilitario.excepcion.TransaccionExcepcion;
 import co.edu.uco.ucoparking.transversal.utilitario.excepcion.UcoParkingExcepcion;
 import co.edu.uco.ucoparking.transversal.utilitario.excepcion.ValidacionExcepcion;
 
-public class RegistrarNuevoPaisFachadaImpl implements RegistrarNuevoPaisFachada {
+public class EliminarPaisFachadaImpl implements EliminarPaisFachada {
 
 	private DAOFactory daoFactory;
-	private RegistrarNuevoPaisCasoUso casoUso;
+	private EliminarPaisCasoUso casoUso;
 
-	public RegistrarNuevoPaisFachadaImpl() {
+	public EliminarPaisFachadaImpl() {
 		daoFactory = DAOFactory.getFactory();
-		casoUso = new RegistrarNuevoPaisCasoUsoImpl(daoFactory);
+		casoUso = new EliminarPaisCasoUsoImpl(daoFactory);
 	}
 
 	@Override
@@ -32,7 +32,9 @@ public class RegistrarNuevoPaisFachadaImpl implements RegistrarNuevoPaisFachada 
 
 			daoFactory.iniciarTransaccion();
 
-			PaisDominio dominio = new PaisDominio.Builder().id(datos.getId()).nombre(datos.getNombre()).build();
+			PaisDominio dominio = new PaisDominio.Builder()
+					.id(datos.getId())
+					.build();
 			casoUso.ejecutar(dominio);
 
 			daoFactory.confirmarTransaccion();
