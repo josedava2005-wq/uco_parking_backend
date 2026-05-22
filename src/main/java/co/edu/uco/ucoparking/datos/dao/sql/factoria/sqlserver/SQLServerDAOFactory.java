@@ -1,13 +1,14 @@
 package co.edu.uco.ucoparking.datos.dao.sql.factoria.sqlserver;
 
+import java.io.InputStream;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import co.edu.uco.ucoparking.datos.dao.PaisDAO;
 import co.edu.uco.ucoparking.datos.dao.sql.sqlserver.PaisSQLServerDAO;
-import co.edu.uco.ucoparking.transversal.utilitario.excepcion.TransaccionExcepcion;
-import io.github.cdimascio.dotenv.Dotenv;
 import co.edu.uco.ucoparking.datos.dao.sql.factoria.DAOFactory;
+import co.edu.uco.ucoparking.transversal.utilitario.excepcion.TransaccionExcepcion;
 
 public class SQLServerDAOFactory extends DAOFactory {
 
@@ -18,27 +19,33 @@ public class SQLServerDAOFactory extends DAOFactory {
 	@Override
 	protected void abrirConexion() {
 		try {
+			Properties props = new Properties();
+			try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties")) {
+				props.load(input);
+			}
 
-			Dotenv env = Dotenv.load();
+			String urlConexion = props.getProperty("db.url");
+			String driver     = props.getProperty("db.driver");
+			String usuario    = props.getProperty("db.user",     "").trim();
+			String contrasena = props.getProperty("db.password", "").trim();
 
-			String servidor = env.get("BD_HOST");
-			String puerto = env.get("BD_PORT");
-			String baseDatos = env.get("BD_NAME");
-			String usuario = env.get("BD_USR");
-			String contrasena = env.get("BD_PWD");
+			Class.forName(driver);
 
-			String urlConexion = "jdbc:sqlserver://" + servidor + ":" + puerto + ";" + "database=" + baseDatos + ";"
-					+ "user=" + usuario + ";" + "password=" + contrasena + ";applicationName=UCOParking;"
-					+ "encrypt=false;" + "trustServerCertificate=false;" + "loginTimeout=30;";
+			if (!usuario.isEmpty()) {
+				conexion = DriverManager.getConnection(urlConexion, usuario, contrasena);
+			} else {
+				conexion = DriverManager.getConnection(urlConexion);
+			}
 
-			conexion = DriverManager.getConnection(urlConexion);
 		} catch (SQLException e) {
-
 			conexion = null;
-
-			throw new TransaccionExcepcion("Error al abrir la conexión a la base de datos SQLServer", e);
+			throw new TransaccionExcepcion(
+				"Error SQL al conectar con la base de datos: " + e.getMessage(), e);
+		} catch (Exception e) {
+			conexion = null;
+			throw new TransaccionExcepcion(
+				"Error al configurar la conexion [" + e.getClass().getSimpleName() + "]: " + e.getMessage(), e);
 		}
-
 	}
 
 	@Override
@@ -99,7 +106,7 @@ public class SQLServerDAOFactory extends DAOFactory {
 	private boolean esConexionValida() {
 		try {
 			return conexion != null && !conexion.isClosed();
-		} catch (SQLException _) {
+		} catch (SQLException ignorada) {
 			return false;
 		}
 	}
