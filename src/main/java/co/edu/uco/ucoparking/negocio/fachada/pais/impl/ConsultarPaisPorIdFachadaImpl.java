@@ -22,7 +22,7 @@ public class ConsultarPaisPorIdFachadaImpl implements ConsultarPaisPorIdFachada 
 	}
 
 	@Override
-	public PaisEntidad ejecutar(PaisDTO datos) {
+	public PaisDTO ejecutar(PaisDTO datos) {
 
 		if (UtilObjeto.esNulo(datos)) {
 			throw new ValidacionExcepcion("Los datos del pais no pueden ser nulos");
@@ -31,11 +31,20 @@ public class ConsultarPaisPorIdFachadaImpl implements ConsultarPaisPorIdFachada 
 		try {
 
 			PaisDominio dominio = new PaisDominio.Builder().id(datos.getId()).build();
-			return casoUso.ejecutar(dominio);
+			PaisEntidad entidad = casoUso.ejecutar(dominio);
+
+			return new PaisDTO.Builder()
+					.id(entidad.getId())
+					.nombre(entidad.getNombre())
+					.build();
+
+		} catch (UcoParkingExcepcion excepcion) {
+
+			throw excepcion;
 
 		} catch (Exception excepcion) {
 
-			throw new UcoParkingExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+			throw new UcoParkingExcepcion("Ocurrio un error obteniendo la informacion del pais.", excepcion);
 
 		} finally {
 
